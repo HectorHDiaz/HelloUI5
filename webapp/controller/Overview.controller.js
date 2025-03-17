@@ -8,7 +8,8 @@ sap.ui.define([
         "use strict";
 
         return Controller.extend("sap.training.exc.controller.Overview", {
-
+  
+            
 
         });
     });
