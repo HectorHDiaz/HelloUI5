@@ -44,6 +44,7 @@
         }
     },
     "sap.ui5": {
+        "handleValidation": true,
         "flexEnabled": false,
         "dependencies": {
             "minUI5Version": "1.96.36",
@@ -59,7 +60,7 @@
             }
         },
         "contentDensities": {
-            "compact": false,
+            "compact": true,
             "cozy": true
         },
         "models": {
@@ -77,6 +78,10 @@
                     "autoExpandSelect": true,
                     "earlyRequests": true
                 }
+            },
+            "": {
+            "type": "sap.ui.model.json.JSONModel",
+            "uri": "model/data.json"
             }
         },
         "resources": {
