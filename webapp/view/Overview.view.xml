@@ -8,14 +8,19 @@
 
     <Page title="Flight Customers">
         <content>
-            <Panel headerText="New Customer" expandable="true" expanded="true" class="sapUiResponsiveMargin sapUiHideOnPhone" width="auto">
+            <Panel expandable="{= !${device>/system/desktop} }" expanded="{device>/system/desktop}"
+            headerText="New Customer" 
+            class="sapUiResponsiveMargin sapUiHideOnPhone" 
+            width="auto" >
                 <content>
                     <f:SimpleForm layout="ColumnLayout" editable="true">
                         <f:toolbar>
                             <Toolbar >
                                 <content>
-                                    <ToolbarSpacer></ToolbarSpacer>
-                                    <Button icon="sap-icon://create" text="Create Customer" press=".onSave"></Button>
+                                    <ToolbarSpacer/>
+                                    <Button icon="sap-icon://create" text="Create Customer" press=".onSave"  
+                                            enabled="{= ${customer>/CustomerName} !== undefined 
+                                            &amp;&amp; ${customer>/CustomerName}.length > 0 }"/>
                                 </content>
                             </Toolbar>
                         </f:toolbar>
@@ -24,7 +29,7 @@
                             <Label text="Form"/>
                             <Input value="{customer>/Form}"/>
                             <Label text="Customer Name"/>
-                            <Input value="{customer>/CustomerName}"/>
+                            <Input value="{customer>/CustomerName}" valueLiveUpdate="true"/>
                             <Label text="Discount"/>
                             <Input
                                 value="{
@@ -50,16 +55,29 @@
                     </f:SimpleForm>
                 </content>
             </Panel>
-            <Table headerText="Customers" growing="true" growingThreshold="5"
-                    class="sapUiResponsiveMargin" width="auto" items="{/Customers}"
+            <Table id="customerTable" headerText="Customers" growing="true" growingThreshold="5"
+                    class="sapUiResponsiveMargin" width="auto" 
+                    items="{
+                            path: '/Customers',
+                            sorter: [
+                                {path: 'City', group: true},
+                                {path: 'CustomerName'} ]
+                            }"
                     mode="SingleSelectLeft" selectionChange=".onCustomerChange">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Customers"/>
+                            <ToolbarSpacer/>
+                            <SearchField width="40%" search=".onFilterCustomers"/>
+                        </Toolbar>
+                        </headerToolbar>
                 <columns>
                     <Column><header><Text text="Customer Name"/></header></Column>
-                    <Column><header><Text text="Street"/></header></Column>
-                    <Column><header><Text text="Post Code"/></header></Column>
+                    <Column minScreenWidth="Desktop"><header><Text text="Street"/></header></Column>
+                    <Column minScreenWidth="Desktop"><header><Text text="Post Code"/></header></Column>
                     <Column><header><Text text="City"/></header></Column>
-                    <Column><header><Text text="Country"/></header></Column>
-                    <Column><header><Text text="Email"/></header></Column>
+                    <Column minScreenWidth="Tablet"><header><Text text="Country"/></header></Column>
+                    <Column minScreenWidth="Tablet" demandPopin="true"><header><Text text="Email"/></header></Column>
                 </columns>
                 <items>
                     <ColumnListItem>
@@ -80,9 +98,9 @@
                         <Column><header><Text text="Airline ID"/></header></Column>
                         <Column><header><Text text="Connection Number"/></header></Column>
                         <Column><header><Text text="Flight Date"/></header></Column>
-                        <Column><header><Text text="Class"/></header></Column>
-                        <Column><header><Text text="Foreign Currency Payment"/></header></Column>
-                        <Column><header><Text text="Cancellation Status"/></header></Column>
+                        <Column minScreenWidth="Desktop" demandPopin="true"><header><Text text="Class"/></header></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true"><header><Text text="Foreign Currency Payment"/></header></Column>
+                        <Column minScreenWidth="Tablet" demandPopin="true"><header><Text text="Cancellation Status"/></header></Column>
                     </columns>
                     <items>
                         <ColumnListItem>
@@ -112,7 +130,7 @@
                                     formatOptions: {showMeasure: false}
                                 }"
                                 unit="{ForeignCurrency}"/>
-                            <Text text="{IsCancelled}"/>
+                                <core:Icon src="{= ${IsCancelled} === 'X' ? 'sap-icon://cancel' : 'sap-icon://accept' }" tooltip="{= ${IsCancelled} === 'X' ? 'cancelled' : 'not cancelled' }"/>
                         </cells>
                         </ColumnListItem>
                     </items>
